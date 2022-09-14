@@ -1,7 +1,7 @@
 defmodule ExWebp.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.1"
   @source_url "https://github.com/mithereal/ex_webp"
 
   def project do
@@ -19,7 +19,6 @@ defmodule ExWebp.MixProject do
       elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
-
 
   defp aliases do
     [
@@ -64,6 +63,7 @@ defmodule ExWebp.MixProject do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:eimp, "~> 1.0"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end

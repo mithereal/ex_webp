@@ -28,13 +28,19 @@ def deps do
 end
 ```
 
-## Usage: there are 2 ways to use as a mix task or as a library -- mix task usage detailed below
+## Usage: 3 ways to use: static_compressors, mix task or library -- compressor and mix task usage detailed below
 
-```bash
-$ mix webp default "assets/images/"
-```
+# Static Compressor for phoenix
 
+Note that installation requires that Phoenix watchers can accept `MFArgs`
+tuples – so you must have Phoenix > v1.5.9.
 
+```elixir
+config :phoenix,
+       static_compressors: [Webp.Compressor]
+``` 
+
+# mix task
 ## Profiles
 
 The first argument to `webp` is the execution profile.
@@ -53,11 +59,7 @@ config :webp,
 When `mix webp default` is invoked, the task arguments will be appended
 to the ones configured above.
 
-## Adding to Phoenix
-
-To add `webp` to an application using Phoenix, you need only four steps.
-Note that installation requires that Phoenix watchers can accept `MFArgs`
-tuples – so you must have Phoenix > v1.5.9.
+## Adding to Phoenix w/o static compressor
 
 First add it as a dependency in your `mix.exs`:
 
@@ -132,7 +134,7 @@ width: 745px;
 }
 ```
 
-and the corresponding added to the layout
+and the following to the layout
 
 ```html
 <html class="no-js" lang="en">

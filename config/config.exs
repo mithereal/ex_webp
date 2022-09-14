@@ -1,6 +1,7 @@
 import Config
 
 config :webp,
+  image_extensions: [".png", ".jpg", ".jpeg"],
   path: "/usr/bin/cwebp",
   location: Path.expand("../priv/static/images", __DIR__),
   destination: Path.expand("../priv/static/images", __DIR__)
