@@ -7,7 +7,7 @@ defmodule Webp.Compressor do
     valid_extension = Path.extname(file_path) in Application.get_env(:webp, :image_extensions, [".png", ".jpg", ".jpeg"])
 
     unless :eimp.is_supported(:webp) == true do
-      Logger.error("webp is not supported, is libwebp installed correctly?")
+      Logger.error("libwebp Not Found")
     end
 
     case valid_extension && :eimp.is_supported(:webp) do
