@@ -38,7 +38,7 @@ defmodule Webp.Compressor do
         :eimp.convert(content, options)
 
       false ->
-      Logger.error("Could not find :eimp, is it installed correctly?")
+      Logger.error(":eimp Not Found")
 
       :error
     end
