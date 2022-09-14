@@ -5,13 +5,12 @@ defmodule Webp.Compressor do
 
   def compress_file(file_path, content) do
     valid_extension = Path.extname(file_path) in Application.get_env(:webp, :image_extensions, [".png", ".jpg", ".jpeg"])
-    supported_formats = :eimp.is_supported(:webp)
 
-    unless supported_formats == true do
-      Logger.error("webp is not supported, is libwebp installed?")
+    unless :eimp.is_supported(:webp) == true do
+      Logger.error("webp is not supported, is libwebp installed correctly?")
     end
 
-    case valid_extension && supported_formats do
+    case valid_extension && :eimp.is_supported(:webp) do
       true ->
         compressed_content = convert(content, :webp)
 
