@@ -1,9 +1,15 @@
 defmodule Webp.Compressor do
   @behaviour Phoenix.Digester.Compressor
 
+  require Logger
+
   def compress_file(file_path, content) do
     valid_extension = Path.extname(file_path) in Application.get_env(:webp, :image_extensions, [".png", ".jpg", ".jpeg"])
     supported_formats = :eimp.is_supported(:webp)
+
+    unless supported_formats == true do
+      Logger.error("webp is not supported, is libwebp installed?")
+    end
 
     case valid_extension && supported_formats do
       true ->
@@ -33,7 +39,9 @@ defmodule Webp.Compressor do
         :eimp.convert(content, options)
 
       false ->
-        {:error, "no eimp application"}
+      Logger.error("Could not find :eimp, is it installed correctly?")
+
+      :error
     end
   end
 end
