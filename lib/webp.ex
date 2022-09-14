@@ -10,8 +10,8 @@ defmodule Webp do
 
       config :webp,
         default: [
-          location: "static/images",
-          cd: Path.expand("../assets", __DIR__)
+          location: Path.expand("../priv/static/images/", __DIR__),
+          destination: Path.expand("../priv/static/images/", __DIR__)
         ]
 
   ## Webp configuration
@@ -48,8 +48,8 @@ defmodule Webp do
 
           config :webp,
             #{profile}: [
-              location: "assets/images/",
-              cd: Path.expand("../assets", __DIR__)
+              location: Path.expand("../assets", __DIR__),
+              destination: Path.expand("../priv/static/images/", __DIR__)
             ]
       """
   end
@@ -77,21 +77,22 @@ defmodule Webp do
   def run(profile, extra_args) when is_atom(profile) and is_list(extra_args) do
     config = config_for!(profile)
     location = config[:location] || []
+    destination = config[:destination] || nil
+    quality = config[:quality] || 80
 
     if location == [] and extra_args == [] do
       raise "no arguments passed to webp"
     end
 
+
     opts = [
-      cd: config[:cd] || File.cwd!(),
+      cd: config[:location] || File.cwd!(),
       env: config[:env] || %{},
       into: IO.stream(:stdio, :line),
       stderr_to_stdout: true
     ]
 
-    quality = extra_args[:quality] || 80
-
-    args = ([location] ++ extra_args) |> Map.drop([:quality])
+    args = [location] ++ extra_args
 
     files = File.glob(location)
 
@@ -100,9 +101,11 @@ defmodule Webp do
 
       extname = Path.extname(source)
 
-      destination = Path.basename(source, extname)
+      destination = destination || Path.basename(source, extname)
 
-      params = "-q #{quality}} #{source} -o #{destination}"
+      filename = Path.basename(source, extname)
+
+      params = "-q #{quality}} #{source} -o #{destination}/#{filename}.webp"
 
       command = path <> params
 
@@ -136,23 +139,25 @@ defmodule Webp do
   Convert Source to Destination `args`.
 
   """
-  def convert(source, extra_args \\ []) do
+  def convert(source, params \\ []) do
     opts = [
-      cd: extra_args[:cd] || File.cwd!(),
-      env: extra_args[:env] || %{},
+      cd: params[:location] || File.cwd!(),
+      env: params[:env] || %{},
       into: IO.stream(:stdio, :line),
       stderr_to_stdout: true
     ]
 
-    quality = extra_args[:quality] || 80
+    quality = params[:quality] || 80
 
     path = Application.get_env(:webp, :path, "/usr/bin/cwebp")
 
     extname = Path.extname(source)
 
-    destination = Path.basename(source, extname)
+    filename = Path.basename(source, extname)
 
-    params = ["-q #{quality}}", "#{source} -o #{destination}"]
+    destination = params[:destination] || Path.basename(source, extname)
+
+    params = ["-q #{quality}}", "#{source} -o #{destination}/#{filename}.webp"]
 
     path
     |> cmd(params, opts)

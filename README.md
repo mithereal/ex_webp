@@ -1,6 +1,5 @@
 # ExWebp
 
-[![CI](https://github.com/mithereal/ex_webp/actions/workflows/main.yml/badge.svg)](https://github.com/mithereal/ex_webp/actions/workflows/main.yml)
 
 Mix tasks for installing and invoking [webp](https://github.com/mithereal/ex_webp/).
 
@@ -31,10 +30,6 @@ end
 
 ## Usage: there are 2 ways to use as a mix task or as a library -- mix task usage detailed below
 
-```
-
-invoke webp with:
-
 ```bash
 $ mix webp default "assets/images/"
 ```
@@ -50,8 +45,8 @@ directory, the OS environment, and default arguments to the
 ```elixir
 config :webp,
   default: [
-    location: "assets/images",
-    cd: Path.expand("../assets/images", __DIR__)
+    location: Path.expand("../priv/static/images/", __DIR__),
+    destination: Path.expand("../priv/static/images/", __DIR__)
   ]
 ```
 
@@ -80,10 +75,10 @@ compile CSS to the output location `priv/static/assets/images/`:
 
 ```elixir
 config :webp,
-  default: [
-    args: "assets/images",
-    cd: Path.expand("../assets/images", __DIR__)
-  ]
+       default: [
+         location: Path.expand("../priv/static/images/", __DIR__),
+         destination: Path.expand("../priv/static/images/", __DIR__)
+       ]
 ```
 
 > Note: if you are using esbuild (the default from Phoenix v1.6),
@@ -97,12 +92,8 @@ config :webp,
 For development, we want to enable watch mode. So find the `watchers`
 configuration in your `config/dev.exs` and add:
 
-```elixir
-  webp: {
-    Webp,
-    :run,
-    [:default, "assets/images/"]
-  }
+```
+webp: {Webp, :run, [:default, ~w(--watch)]}
 ```
 
 Note we are embedding source maps with absolute URLs and enabling the file system watcher.
@@ -111,11 +102,11 @@ Finally, back in your `mix.exs`, make sure you have an `assets.deploy`
 alias for deployments
 
 ```elixir
-"assets.deploy": [
+["assets.deploy": [
   "esbuild default --minify",
   "webp default",
   "phx.digest"
-]
+]]
 ```
 
 ## css webp support
@@ -130,8 +121,7 @@ left: 100px;
 position: absolute;
 height: 411px;
 width: 745px;
-}
-             
+}  
 .webp .img-class {
 background-image: url("../images/img.webp");
 background-repeat: no-repeat;
@@ -140,6 +130,18 @@ position: absolute;
 height: 411px;
 width: 745px;
 }
+```
+
+and the corresponding added to the layout
+
+```html
+<html class="no-js" lang="en">
+<script type="text/javascript">
+        document.documentElement.classList.remove("no-js");
+</script>
+
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/modernizr_webp.js") %>"></script>
+</html>
 ```
 
 ## Acknowledgements
