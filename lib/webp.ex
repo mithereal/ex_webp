@@ -84,7 +84,6 @@ defmodule Webp do
       raise "no arguments passed to webp"
     end
 
-
     opts = [
       cd: config[:location] || File.cwd!(),
       env: config[:env] || %{},
