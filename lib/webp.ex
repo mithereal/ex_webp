@@ -177,9 +177,13 @@ defmodule Webp do
 
         destination = params[:destination] || Path.basename(source, extname)
 
-        params = ["#{source}"]
+        params = []
 
-        path
+        args = " #{source} -o #{filename}.webp"
+
+        command = path <> args
+
+        command
         |> cmd(params, opts)
         |> elem(1)
 
