@@ -179,7 +179,6 @@ defmodule Webp do
 
         params = ["#{source}"]
 
-
         path
         |> cmd(params, opts)
         |> elem(1)
