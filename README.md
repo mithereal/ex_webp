@@ -145,7 +145,13 @@ and the following to the layout
 <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/modernizr_webp.js") %>"></script>
 </html>
 ```
+## Cleanup of old assets
 
+you can cleanup old webp assets by invoking 
+
+```elixir
+mix webp.delete
+```
 ## Acknowledgements
 
 This package is based on the excellent [esbuild](https://github.com/phoenixframework/esbuild) by Wojtek Mach and José Valim.
