@@ -23,7 +23,7 @@ then it only needs to be a dev dependency:
 ```elixir
 def deps do
   [
-    {:webp, "~> 0.1", only: :dev}
+    {:webp, ">= 0.0.0", only: :dev}
   ]
 end
 ```
@@ -67,7 +67,7 @@ First add it as a dependency in your `mix.exs`:
 def deps do
   [
     {:phoenix, "~> 1.6.0"},
-    {:webp, "~> 0.1", runtime: Mix.env() == :dev}
+    {:webp, ">= 0.0.0", runtime: Mix.env() == :dev}
   ]
 end
 ```
