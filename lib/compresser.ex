@@ -11,13 +11,17 @@ defmodule Webp.Compressor do
         ".jpeg"
       ])
 
-    if :eimp.is_supported(:webp) == false && Mix.env() in [:dev, :test]  do
-      Logger.error("libwebp Not Found")
-    end
-
-    case valid_extension && :eimp.is_supported(:webp) do
+    case valid_extension do
       true ->
-        compressed_content = convert(content, :webp)
+        compressed_content =
+          if :eimp.is_supported(:webp) do
+            convert(content, :webp)
+          else
+            location = Application.get_env(:webp, :destination)
+            params = %{location: location}
+            Webp.convert(file_path, params)
+            :error
+          end
 
         case compressed_content do
           {:ok, data} ->

@@ -63,8 +63,8 @@ defmodule Webp do
     cmd(path, args, [])
   end
 
-  defp cmd([command | args], extra_args, opts) do
-    System.cmd(command, args ++ extra_args, opts)
+  defp cmd(command, args, opts) do
+    System.cmd(command, args, opts)
   end
 
   @doc """
@@ -92,32 +92,46 @@ defmodule Webp do
     ]
 
     args = [location] ++ extra_args
+    glob = location <> "/*"
 
-    files = File.glob(location)
+    files = Path.wildcard(glob)
 
     for source <- files do
       path = Application.get_env(:webp, :path, "/usr/bin/cwebp")
 
-      extname = Path.extname(source)
+      valid_extension =
+        Path.extname(source) in Application.get_env(:webp, :image_extensions, [
+          ".png",
+          ".jpg",
+          ".jpeg"
+        ])
 
-      destination = destination || Path.basename(source, extname)
+      case valid_extension do
+        true ->
+          extname = Path.extname(source)
 
-      filename = Path.basename(source, extname)
+          destination = destination || Path.basename(source, extname)
 
-      params = "-q #{quality}} #{source} -o #{destination}/#{filename}.webp"
+          filename = Path.basename(source, extname)
 
-      command = path <> params
+          params = "#{source} -o #{filename}.webp"
 
-      path =
-        if "--watch" in args do
-          [script_path() | command]
-        else
-          command
-        end
+          command = path <> params
 
-      path
-      |> cmd(args, opts)
-      |> elem(1)
+          path =
+            if "--watch" in args do
+              [script_path() | command]
+            else
+              command
+            end
+
+          path
+          |> cmd(args, opts)
+          |> elem(1)
+
+        false ->
+          :error
+      end
     end
   end
 
@@ -146,21 +160,32 @@ defmodule Webp do
       stderr_to_stdout: true
     ]
 
-    quality = params[:quality] || 80
-
     path = Application.get_env(:webp, :path, "/usr/bin/cwebp")
 
-    extname = Path.extname(source)
+    valid_extension =
+      Path.extname(source) in Application.get_env(:webp, :image_extensions, [
+        ".png",
+        ".jpg",
+        ".jpeg"
+      ])
 
-    filename = Path.basename(source, extname)
+    case valid_extension do
+      true ->
+        extname = Path.extname(source)
 
-    destination = params[:destination] || Path.basename(source, extname)
+        filename = Path.basename(source, extname)
 
-    params = ["-q #{quality}}", "#{source} -o #{destination}/#{filename}.webp"]
+        destination = params[:destination] || Path.basename(source, extname)
 
-    path
-    |> cmd(params, opts)
-    |> elem(1)
+        params = ["#{source}"]
+
+        path
+        |> cmd(params, opts)
+        |> elem(1)
+
+      false ->
+        :error
+    end
   end
 
   @doc """
