@@ -110,23 +110,21 @@ defmodule Webp do
         true ->
           extname = Path.extname(source)
 
-          destination = destination || Path.basename(source, extname)
-
           filename = Path.basename(source, extname)
 
-          params = "#{source} -o #{filename}.webp"
+          destination = config[:destination] || Path.basename(source, extname)
 
-          command = path <> params
+          params = ["-quiet", "#{source}", "-o", "#{destination}.webp"]
 
           path =
             if "--watch" in args do
-              [script_path() | command]
+              [script_path() | path]
             else
-              command
+              path
             end
 
           path
-          |> cmd(args, opts)
+          |> cmd(params, opts)
           |> elem(1)
 
         false ->
