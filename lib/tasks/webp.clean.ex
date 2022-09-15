@@ -24,7 +24,7 @@ defmodule Mix.Tasks.Webp.Clean do
           Application.get_env(:webp, :location, default_path)
       end
 
-    images_path = images_path <> "/*webp"
+    images_path = images_path <> "/*.webp"
     System.cmd("rm", [images_path], [])
   end
 
