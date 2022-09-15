@@ -150,7 +150,7 @@ and the following to the layout
 you can cleanup old webp assets by invoking 
 
 ```elixir
-mix webp.delete
+mix webp.clean
 ```
 ## Acknowledgements
 
