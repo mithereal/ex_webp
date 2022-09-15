@@ -4,9 +4,14 @@ defmodule Webp.Compressor do
   require Logger
 
   def compress_file(file_path, content) do
-    valid_extension = Path.extname(file_path) in Application.get_env(:webp, :image_extensions, [".png", ".jpg", ".jpeg"])
+    valid_extension =
+      Path.extname(file_path) in Application.get_env(:webp, :image_extensions, [
+        ".png",
+        ".jpg",
+        ".jpeg"
+      ])
 
-    unless :eimp.is_supported(:webp) == true do
+    if :eimp.is_supported(:webp) == false && Mix.env() in [:dev, :test]  do
       Logger.error("libwebp Not Found")
     end
 
@@ -18,7 +23,7 @@ defmodule Webp.Compressor do
           {:ok, data} ->
             {:ok, data}
 
-          error ->
+          _ ->
             :error
         end
 
@@ -34,13 +39,14 @@ defmodule Webp.Compressor do
   defp convert(content, options) do
     cond do
       Code.ensure_loaded?(:eimp) and function_exported?(:eimp, :convert, 2) ->
-
         :eimp.convert(content, options)
 
       false ->
-      Logger.error(":eimp Not Found")
+        if Mix.env() in [:dev, :test] do
+          Logger.error(":eimp Not Found")
+        end
 
-      :error
+        :error
     end
   end
 end
