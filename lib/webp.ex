@@ -177,7 +177,7 @@ defmodule Webp do
 
         destination = params[:destination] || Path.basename(source, extname)
 
-        params = ["#{source}", "-o", "#{destination}"]
+        params = ["-quiet", "#{source}", "-o", "#{destination}.webp"]
 
         path
         |> cmd(params, opts)
