@@ -59,9 +59,6 @@ defmodule Webp do
     Path.join(:code.priv_dir(:webp), "webp.bash")
   end
 
-  defp cmd(path, args) do
-    cmd(path, args, [])
-  end
 
   defp cmd(command, args, opts) do
     System.cmd(command, args, opts)
@@ -97,7 +94,7 @@ defmodule Webp do
     files = Path.wildcard(glob)
 
     for source <- files do
-      path = Application.get_env(:webp, :path, "/usr/bin/cwebp")
+      path = bin_path()
 
       valid_extension =
         Path.extname(source) in Application.get_env(:webp, :image_extensions, [
@@ -139,7 +136,7 @@ defmodule Webp do
   The executable may not be available if it was not yet installed.
   """
   def bin_path do
-    Application.get_env(:webp, :path, "")
+    Application.get_env(:webp, :path, "/usr/bin/cwebp")
   end
 
   @doc """
@@ -154,8 +151,9 @@ defmodule Webp do
       stderr_to_stdout: true
     ]
 
-    bin_path()
-    |> unless File.exists?() do
+    path = bin_path()
+
+    unless File.exists?(path) do
       raise "#{} Not Found please set path to the cwebp location"
     end
 
@@ -176,7 +174,7 @@ defmodule Webp do
 
         params = ["-quiet", "#{source}", "-o", "#{destination}.webp"]
 
-        bin_path()
+        path
         |> cmd(params, opts)
         |> elem(1)
 
