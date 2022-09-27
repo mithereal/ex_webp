@@ -139,7 +139,7 @@ defmodule Webp do
   The executable may not be available if it was not yet installed.
   """
   def bin_path do
-    Application.get_env(:webp, :path)
+    Application.get_env(:webp, :path, "")
   end
 
   @doc """
