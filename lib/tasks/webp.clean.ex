@@ -24,15 +24,14 @@ defmodule Mix.Tasks.Webp.Clean do
           Application.get_env(:webp, :location, default_path)
       end
 
-    images_path = images_path <> "/*.webp"
-    System.cmd("rm", [images_path], [])
-  end
+    opts = [
+      cd: images_path || File.cwd!(),
+      env:  %{},
+      into: IO.stream(:stdio, :line),
+      stderr_to_stdout: true
+    ]
 
-  def run(path, opts) do
-    default_phx_path = Path.expand("../#{path}", __DIR__)
-    images_path = Application.get_env(:webp, :location, default_phx_path)
-
-    glob = "#{images_path}/*.webp"
-    System.cmd("rm", [glob], opts)
+    images_path =  "*.webp"
+    System.cmd("rm", [images_path], opts)
   end
 end

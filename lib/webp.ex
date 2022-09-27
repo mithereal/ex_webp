@@ -139,7 +139,7 @@ defmodule Webp do
   The executable may not be available if it was not yet installed.
   """
   def bin_path do
-    Application.get_env(:cwebp, :path)
+    Application.get_env(:webp, :path)
   end
 
   defp path_exists?(path) do
@@ -158,7 +158,11 @@ defmodule Webp do
       stderr_to_stdout: true
     ]
 
-    path = Application.get_env(:webp, :path, "/usr/bin/cwebp")
+    path = bin_path()
+
+    unless File.exists?(path) do
+      raise "#{} Not Found please set path to the cwebp location"
+    end
 
     valid_extension =
       Path.extname(source) in Application.get_env(:webp, :image_extensions, [
