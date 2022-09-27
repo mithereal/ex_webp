@@ -154,9 +154,8 @@ defmodule Webp do
       stderr_to_stdout: true
     ]
 
-    path = bin_path()
-
-    unless File.exists?(path) do
+    bin_path()
+    |> unless File.exists?() do
       raise "#{} Not Found please set path to the cwebp location"
     end
 
@@ -177,7 +176,7 @@ defmodule Webp do
 
         params = ["-quiet", "#{source}", "-o", "#{destination}.webp"]
 
-        path
+        bin_path()
         |> cmd(params, opts)
         |> elem(1)
 
