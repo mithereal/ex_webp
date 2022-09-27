@@ -142,10 +142,6 @@ defmodule Webp do
     Application.get_env(:webp, :path)
   end
 
-  defp path_exists?(path) do
-    Enum.all?(path, &File.exists?/1)
-  end
-
   @doc """
   Convert Source to Destination `args`.
 
