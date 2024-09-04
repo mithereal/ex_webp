@@ -14,15 +14,7 @@ defmodule Webp.Compressor do
     case valid_extension do
       true ->
         compressed_content =
-          if Code.ensure_loaded?(:eimp) and function_exported?(:eimp, :is_supported, 1) and
-               :eimp.is_supported(:webp) do
-            convert(content, :webp)
-          else
-            location = Application.get_env(:webp, :destination)
-            params = %{location: location}
-            Webp.convert(file_path, params)
-            :error
-          end
+          convert(content, :webp, file_path)
 
         case compressed_content do
           {:ok, data} ->
@@ -41,16 +33,15 @@ defmodule Webp.Compressor do
     [".webp"]
   end
 
-  defp convert(content, options) do
+  defp convert(content, options, file_path) do
     cond do
       Code.ensure_loaded?(:eimp) and function_exported?(:eimp, :convert, 2) ->
         :eimp.convert(content, options)
 
       false ->
-        if Mix.env() in [:dev, :test] do
-          Logger.error(":eimp Not Found")
-        end
-
+        location = Application.get_env(:webp, :destination)
+        params = %{location: location}
+        Webp.convert(file_path, params)
         :error
     end
   end
