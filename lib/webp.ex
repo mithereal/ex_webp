@@ -59,7 +59,6 @@ defmodule Webp do
     Path.join(:code.priv_dir(:webp), "webp.bash")
   end
 
-
   defp cmd(command, args, opts) do
     System.cmd(command, args, opts)
   end

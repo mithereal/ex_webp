@@ -14,7 +14,8 @@ defmodule Webp.Compressor do
     case valid_extension do
       true ->
         compressed_content =
-          if Code.ensure_loaded?(:eimp) and function_exported?(:eimp, :is_supported, 1) and (:eimp.is_supported(:webp)) do
+          if Code.ensure_loaded?(:eimp) and function_exported?(:eimp, :is_supported, 1) and
+               :eimp.is_supported(:webp) do
             convert(content, :webp)
           else
             location = Application.get_env(:webp, :destination)

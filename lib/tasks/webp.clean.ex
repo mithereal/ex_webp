@@ -26,12 +26,12 @@ defmodule Mix.Tasks.Webp.Clean do
 
     opts = [
       cd: images_path || File.cwd!(),
-      env:  %{},
+      env: %{},
       into: IO.stream(:stdio, :line),
       stderr_to_stdout: true
     ]
 
-    images_path =  "*.webp"
+    images_path = "*.webp"
     System.cmd("rm", [images_path], opts)
   end
 end
